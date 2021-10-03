@@ -24,6 +24,10 @@ namespace LW_1
         CancellationTokenSource source;
         int sectionsValue;
         int timeValue;
+        int woodValue;
+        int woodtimeValue;
+        int ropeValue;
+        int ropetimeValue;
 
         //static MaskedTextBox mtbSectionsValue;
         //static MaskedTextBox mtbTimeValue;
@@ -93,8 +97,8 @@ namespace LW_1
             progBarStairs.Location = new Point(1000, 385);
             progBarStairs.Style = ProgressBarStyle.Blocks;
 
-            groupBox1.Location = new Point(99, 182);
-            buttonTerminate.Location = new Point(103, 360);
+            //groupBox1.Location = new Point(99, 182);
+            //buttonTerminate.Location = new Point(103, 360);
 
             //mtbSectionsValue = new MaskedTextBox();
             //mtbSectionsValue.Size = new Size(150, 26);
@@ -168,7 +172,7 @@ namespace LW_1
             int x_dist = pbWood.Location.X;
             try
             {
-                await Task.Delay(1000, source.Token);
+                await Task.Delay(woodtimeValue*1000, source.Token);
                 if (Convert.ToInt32(lblWoodCount.Text) < sectionsValue)
                 {
                     while (pbWood.Location.Y != 210)
@@ -183,7 +187,7 @@ namespace LW_1
                     };
                     if (pbWood.Location.X >= 550 && pbWood.Location.Y >= 210)
                     {
-                        lblWoodCount.Text = (Convert.ToInt32(lblWoodCount.Text) + 5).ToString();
+                        lblWoodCount.Text = (Convert.ToInt32(lblWoodCount.Text) + woodValue).ToString();
                         pbWood.Location = startPos;
 
                         this.mvmntWood(pbWood);
@@ -205,7 +209,7 @@ namespace LW_1
             int x_dist = pbRope.Location.X;
             try
             {
-                await Task.Delay(4000, source.Token);
+                await Task.Delay(ropetimeValue*1000, source.Token);
                 if (Convert.ToInt32(lblRopeCount.Text) < sectionsValue)
                 {
                     while (pbRope.Location.Y != 310)
@@ -220,7 +224,7 @@ namespace LW_1
                     }
                     if (pbRope.Location.X >= 550 && pbRope.Location.Y >= 310)
                     {
-                        lblRopeCount.Text = (Convert.ToInt32(lblRopeCount.Text) + 20).ToString();
+                        lblRopeCount.Text = (Convert.ToInt32(lblRopeCount.Text) + ropeValue).ToString();
                         pbRope.Location = startPos;
                         this.mvmntRope(pbRope);
                     }
@@ -272,6 +276,10 @@ namespace LW_1
             source = new CancellationTokenSource();
             sectionsValue = Convert.ToInt32(mtbSectionsValue.Text);
             timeValue = Convert.ToInt32(mtbTimeValue.Text);
+            woodValue = Convert.ToInt32(mtbWoodValue.Text);
+            woodtimeValue = Convert.ToInt32(mtbWoodTimeValue.Text);
+            ropeValue = Convert.ToInt32(mtbRopeValue.Text);
+            ropetimeValue = Convert.ToInt32(mtbRopeTimeValue.Text);
             progBarStairs.Maximum = timeValue;
             mvmntWood(pbWood);
             mvmntRope(pbRope);
@@ -285,8 +293,10 @@ namespace LW_1
             source.Cancel();
             groupBox1.Enabled = true;
             buttonTerminate.Enabled = false;
-            lblRopeCount.Text = "0";
-            lblWoodCount.Text = "0";
+            foreach (MaskedTextBox item in Controls.OfType<MaskedTextBox>())
+            {
+                item.Text = "0";
+            }
             lblStairsCount.Text = "0";
             progBarStairs.Value = 0;
             pbProduction.Enabled = false;
