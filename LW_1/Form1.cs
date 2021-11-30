@@ -305,25 +305,32 @@ namespace LW_1
         {
             if (!isCrafting && Convert.ToInt32(lblWoodCount.Text) < sectionsValue)
             {
-                Point startPos = pbWood.Location;
-                int y_dist = 0;
-                int x_dist = pbWood.Location.X;
-
-                while (pbWood.Location.Y != 210)
-                {
-                    y_dist++;
-                    pbWood.Location = new Point(pbWood.Location.X, y_dist);
-                };
-                while (pbWood.Location.X != 550)
-                {
-                    x_dist++;
-                    pbWood.Location = new Point(x_dist, pbWood.Location.Y);
-                };
-                if (pbWood.Location.X >= 550 && pbWood.Location.Y >= 210)
+                if (trackBar1.Value > 5)
                 {
                     lblWoodCount.Text = (Convert.ToInt32(lblWoodCount.Text) + woodValue).ToString();
-                    pbWood.Location = startPos;
                 }
+                else
+                {
+                    Point startPos = pbWood.Location;
+                    int y_dist = 0;
+                    int x_dist = pbWood.Location.X;
+
+                    while (pbWood.Location.Y != 210)
+                    {
+                        y_dist++;
+                        pbWood.Location = new Point(pbWood.Location.X, y_dist);
+                    };
+                    while (pbWood.Location.X != 550)
+                    {
+                        x_dist++;
+                        pbWood.Location = new Point(x_dist, pbWood.Location.Y);
+                    };
+                    if (pbWood.Location.X >= 550 && pbWood.Location.Y >= 210)
+                    {
+                        lblWoodCount.Text = (Convert.ToInt32(lblWoodCount.Text) + woodValue).ToString();
+                        pbWood.Location = startPos;
+                    }
+                }                
             }
             else
             {
@@ -336,25 +343,32 @@ namespace LW_1
         {
             if (!isCrafting && Convert.ToInt32(lblRopeCount.Text) < sectionsValue)
             {
-                Point startPos = pbRope.Location;
-                int y_dist = 520;
-                int x_dist = pbRope.Location.X;
-
-                while (pbRope.Location.Y != 310)
-                {
-                    y_dist--;
-                    pbRope.Location = new Point(pbRope.Location.X, y_dist);
-                };
-                while (pbRope.Location.X != 550)
-                {
-                    x_dist++;
-                    pbRope.Location = new Point(x_dist, pbRope.Location.Y);
-                }
-                if (pbRope.Location.X >= 550 && pbRope.Location.Y >= 310)
+                if (trackBar1.Value > 5)
                 {
                     lblRopeCount.Text = (Convert.ToInt32(lblRopeCount.Text) + ropeValue).ToString();
-                    pbRope.Location = startPos;
                 }
+                else
+                {
+                    Point startPos = pbRope.Location;
+                    int y_dist = 520;
+                    int x_dist = pbRope.Location.X;
+
+                    while (pbRope.Location.Y != 310)
+                    {
+                        y_dist--;
+                        pbRope.Location = new Point(pbRope.Location.X, y_dist);
+                    };
+                    while (pbRope.Location.X != 550)
+                    {
+                        x_dist++;
+                        pbRope.Location = new Point(x_dist, pbRope.Location.Y);
+                    }
+                    if (pbRope.Location.X >= 550 && pbRope.Location.Y >= 310)
+                    {
+                        lblRopeCount.Text = (Convert.ToInt32(lblRopeCount.Text) + ropeValue).ToString();
+                        pbRope.Location = startPos;
+                    }
+                }              
             }
             else
             {
