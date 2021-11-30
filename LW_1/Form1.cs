@@ -53,9 +53,6 @@ namespace LW_1
         List<Control> controls_tabPage1;
         List<Control> controls_tabPage2;
 
-        //static MaskedTextBox mtbSectionsValue;
-        //static MaskedTextBox mtbTimeValue;
-
         public Form1()
         {
             InitializeComponent();
@@ -187,10 +184,6 @@ namespace LW_1
 
             tabControl.TabPages[0].Paint += DrawScene;
 
-            //lblWoodCount.TextChanged += label_textChanged;
-            //lblRopeCount.TextChanged += label_textChanged;
-            //pbProduction.EnabledChanged += pbProduction_EnabledChanged;
-
             timer1.Tick += Modelling;
         }
 
@@ -237,124 +230,6 @@ namespace LW_1
             g.Dispose();
         }
 
-        //private async void mvmntWood(PictureBox pbWood)
-        //{
-        //    Point startPos = pbWood.Location;
-        //    int y_dist = 0;
-        //    int x_dist = pbWood.Location.X;
-        //    try
-        //    {
-        //        await Task.Delay(woodtimeValue*stepValue, source.Token);
-        //        if (Convert.ToInt32(lblWoodCount.Text) < sectionsValue && pbProduction.Enabled == false)
-        //        {
-        //            while (pbWood.Location.Y != 210)
-        //            {
-        //                y_dist++;
-        //                pbWood.Location = new Point(pbWood.Location.X, y_dist);
-        //            };
-        //            while (pbWood.Location.X != 550)
-        //            {
-        //                x_dist++;
-        //                pbWood.Location = new Point(x_dist, pbWood.Location.Y);
-        //            };
-        //            if (pbWood.Location.X >= 550 && pbWood.Location.Y >= 210)
-        //            {
-        //                lblWoodCount.Text = (Convert.ToInt32(lblWoodCount.Text) + woodValue).ToString();
-        //                pbWood.Location = startPos;
-
-        //                this.mvmntWood(pbWood);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            woodQueue += woodValue;
-        //            lblWoodQueue.Text = $"Очередь досок: {woodQueue}шт";
-        //            //this.mvmntWood(pbWood);
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return;
-        //    }
-        //}
-
-        //private async void mvmntRope(PictureBox pbRope)
-        //{
-        //    Point startPos = pbRope.Location;
-        //    int y_dist = 520;
-        //    int x_dist = pbRope.Location.X;
-        //    try
-        //    {
-        //        await Task.Delay(ropetimeValue* stepValue, source.Token);
-        //        if (Convert.ToInt32(lblRopeCount.Text) < sectionsValue && pbProduction.Enabled == false)
-        //        {
-        //            while (pbRope.Location.Y != 310)
-        //            {
-        //                y_dist--;
-        //                pbRope.Location = new Point(pbRope.Location.X, y_dist);
-        //            };
-        //            while (pbRope.Location.X != 550)
-        //            {
-        //                x_dist++;
-        //                pbRope.Location = new Point(x_dist, pbRope.Location.Y);
-        //            }
-        //            if (pbRope.Location.X >= 550 && pbRope.Location.Y >= 310)
-        //            {
-        //                lblRopeCount.Text = (Convert.ToInt32(lblRopeCount.Text) + ropeValue).ToString();
-        //                pbRope.Location = startPos;
-        //                this.mvmntRope(pbRope);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            ropeQueue += ropeValue;
-        //            lblRopeQueue.Text = $"Очередь веревок: {ropeQueue}шт";
-        //            //this.mvmntRope(pbRope);
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return;
-        //    }            
-        //}
-
-        //private void label_textChanged(object sender, EventArgs e)
-        //{
-        //    if (Convert.ToInt32(lblWoodCount.Text) >= sectionsValue && Convert.ToInt32(lblRopeCount.Text) >= sectionsValue)
-        //    {
-        //        pbProduction.Enabled = true;
-        //    }
-        //}
-
-        //async private void pbProduction_EnabledChanged(object sender, EventArgs e)
-        //{
-        //    isCrafting = false;
-        //    try
-        //    {
-        //        if (pbProduction.Enabled == true)
-        //        {
-        //            isCrafting = true;
-        //            for (int i = 0; i < timeValue; i++)
-        //            {
-        //                await Task.Delay(stepValue, source.Token);
-        //                progBarStairs.Value++;                        
-        //            }                    
-        //            lblStairsCount.Text = (Convert.ToInt32(lblStairsCount.Text) + 1).ToString();
-        //            pbProduction.Enabled = false;
-        //            progBarStairs.Value = 0;
-        //            lblWoodCount.Text = (Convert.ToInt32(lblWoodCount.Text) - sectionsValue).ToString();
-        //            lblRopeCount.Text = (Convert.ToInt32(lblRopeCount.Text) - sectionsValue).ToString();
-        //            mvmntWood(pbWood);
-        //            mvmntRope(pbRope);
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return;                
-        //    }
-            
-        //}
-
         async private void buttonStart_Click(object sender, EventArgs e)
         {
             buttonTerminate.Enabled = true;
@@ -381,27 +256,6 @@ namespace LW_1
             time = 0;
             timer1.Start();
             await Task.Run(() => Modelling(sender, e));
-            //woodQueue = 0;
-            //ropeQueue = 0;
-            //efficiency = 0;
-
-
-            //source = new CancellationTokenSource();
-            //sectionsValue = Convert.ToInt32(mtbSectionsValue.Text);
-            //timeValue = Convert.ToInt32(mtbTimeValue.Text);
-            //woodValue = Convert.ToInt32(mtbWoodValue.Text);
-            //woodtimeValue = Convert.ToInt32(mtbWoodTimeValue.Text);
-            //ropeValue = Convert.ToInt32(mtbRopeValue.Text);
-            //ropetimeValue = Convert.ToInt32(mtbRopeTimeValue.Text);
-            //progBarStairs.Maximum = timeValue;
-            //progBarWorkingTime.Maximum = 864;
-            //mvmntWood(pbWood);
-            //mvmntRope(pbRope);
-            //groupBox1.Enabled = false;
-            //buttonTerminate.Enabled = true;
-            //fill_dgw_n_data();
-
-
         }
 
         private void Modelling(object sender, EventArgs e)
@@ -423,10 +277,6 @@ namespace LW_1
                 MessageBox.Show("Моделирование успешно завершено!");
                 return;
             }
-            //if (Convert.ToInt32(lblWoodCount.Text) >= sectionsValue && Convert.ToInt32(lblRopeCount.Text) >= sectionsValue)
-            //    BeginInvoke(new Delegate_production(Production));
-            //else
-            //    BeginInvoke(new Delegate_production(() => lblDowntime.Text = $"Время простоя: {seconds_of_downtime++}c"));
             if (timer_for_mvmnt % woodtimeValue == 0)
                 BeginInvoke(new Delegate_moving(mvmntWood), pbWood);
             if (timer_for_mvmnt % ropetimeValue == 0)
@@ -450,25 +300,32 @@ namespace LW_1
         {
             if (!isCrafting && Convert.ToInt32(lblWoodCount.Text) < sectionsValue)
             {
-                Point startPos = pbWood.Location;
-                int y_dist = 0;
-                int x_dist = pbWood.Location.X;
-
-                while (pbWood.Location.Y != 210)
-                {
-                    y_dist++;
-                    pbWood.Location = new Point(pbWood.Location.X, y_dist);
-                };
-                while (pbWood.Location.X != 550)
-                {
-                    x_dist++;
-                    pbWood.Location = new Point(x_dist, pbWood.Location.Y);
-                };
-                if (pbWood.Location.X >= 550 && pbWood.Location.Y >= 210)
+                if (trackBar1.Value > 5)
                 {
                     lblWoodCount.Text = (Convert.ToInt32(lblWoodCount.Text) + woodValue).ToString();
-                    pbWood.Location = startPos;
                 }
+                else
+                {
+                    Point startPos = pbWood.Location;
+                    int y_dist = 0;
+                    int x_dist = pbWood.Location.X;
+
+                    while (pbWood.Location.Y != 210)
+                    {
+                        y_dist++;
+                        pbWood.Location = new Point(pbWood.Location.X, y_dist);
+                    };
+                    while (pbWood.Location.X != 550)
+                    {
+                        x_dist++;
+                        pbWood.Location = new Point(x_dist, pbWood.Location.Y);
+                    };
+                    if (pbWood.Location.X >= 550 && pbWood.Location.Y >= 210)
+                    {
+                        lblWoodCount.Text = (Convert.ToInt32(lblWoodCount.Text) + woodValue).ToString();
+                        pbWood.Location = startPos;
+                    }
+                }               
             }
             else
             {
@@ -481,25 +338,32 @@ namespace LW_1
         {
             if (!isCrafting && Convert.ToInt32(lblRopeCount.Text) < sectionsValue)
             {
-                Point startPos = pbRope.Location;
-                int y_dist = 520;
-                int x_dist = pbRope.Location.X;
-
-                while (pbRope.Location.Y != 310)
-                {
-                    y_dist--;
-                    pbRope.Location = new Point(pbRope.Location.X, y_dist);
-                };
-                while (pbRope.Location.X != 550)
-                {
-                    x_dist++;
-                    pbRope.Location = new Point(x_dist, pbRope.Location.Y);
-                }
-                if (pbRope.Location.X >= 550 && pbRope.Location.Y >= 310)
+                if (trackBar1.Value > 5)
                 {
                     lblRopeCount.Text = (Convert.ToInt32(lblRopeCount.Text) + ropeValue).ToString();
-                    pbRope.Location = startPos;
                 }
+                else
+                {
+                    Point startPos = pbRope.Location;
+                    int y_dist = 520;
+                    int x_dist = pbRope.Location.X;
+
+                    while (pbRope.Location.Y != 310)
+                    {
+                        y_dist--;
+                        pbRope.Location = new Point(pbRope.Location.X, y_dist);
+                    };
+                    while (pbRope.Location.X != 550)
+                    {
+                        x_dist++;
+                        pbRope.Location = new Point(x_dist, pbRope.Location.Y);
+                    }
+                    if (pbRope.Location.X >= 550 && pbRope.Location.Y >= 310)
+                    {
+                        lblRopeCount.Text = (Convert.ToInt32(lblRopeCount.Text) + ropeValue).ToString();
+                        pbRope.Location = startPos;
+                    }
+                }                
             }
             else
             {
