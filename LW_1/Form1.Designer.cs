@@ -29,6 +29,8 @@ namespace LW_1
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            this.buttonTerminate = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -43,9 +45,23 @@ namespace LW_1
             this.mtbSectionsValue = new System.Windows.Forms.MaskedTextBox();
             this.mtbRopeValue = new System.Windows.Forms.MaskedTextBox();
             this.mtbWoodValue = new System.Windows.Forms.MaskedTextBox();
-            this.buttonTerminate = new System.Windows.Forms.Button();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.SuspendLayout();
+            // 
+            // buttonTerminate
+            // 
+            this.buttonTerminate.Enabled = false;
+            this.buttonTerminate.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.buttonTerminate.Location = new System.Drawing.Point(104, 445);
+            this.buttonTerminate.Name = "buttonTerminate";
+            this.buttonTerminate.Size = new System.Drawing.Size(351, 31);
+            this.buttonTerminate.TabIndex = 3;
+            this.buttonTerminate.Text = "Прервать";
+            this.buttonTerminate.UseVisualStyleBackColor = true;
+            this.buttonTerminate.Click += new System.EventHandler(this.buttonTerminate_Click);
             // 
             // groupBox1
             // 
@@ -65,7 +81,7 @@ namespace LW_1
             this.groupBox1.Location = new System.Drawing.Point(104, 157);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(351, 282);
-            this.groupBox1.TabIndex = 0;
+            this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             // 
             // label6
@@ -147,6 +163,7 @@ namespace LW_1
             this.mtbTimeValue.Name = "mtbTimeValue";
             this.mtbTimeValue.Size = new System.Drawing.Size(141, 30);
             this.mtbTimeValue.TabIndex = 1;
+            this.mtbTimeValue.Text = "10";
             this.mtbTimeValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // mtbRopeTimeValue
@@ -157,6 +174,7 @@ namespace LW_1
             this.mtbRopeTimeValue.Name = "mtbRopeTimeValue";
             this.mtbRopeTimeValue.Size = new System.Drawing.Size(141, 30);
             this.mtbRopeTimeValue.TabIndex = 1;
+            this.mtbRopeTimeValue.Text = "20";
             this.mtbRopeTimeValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // mtbWoodTimeValue
@@ -167,6 +185,7 @@ namespace LW_1
             this.mtbWoodTimeValue.Name = "mtbWoodTimeValue";
             this.mtbWoodTimeValue.Size = new System.Drawing.Size(141, 30);
             this.mtbWoodTimeValue.TabIndex = 1;
+            this.mtbWoodTimeValue.Text = "5";
             this.mtbWoodTimeValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // mtbSectionsValue
@@ -177,6 +196,7 @@ namespace LW_1
             this.mtbSectionsValue.Name = "mtbSectionsValue";
             this.mtbSectionsValue.Size = new System.Drawing.Size(141, 30);
             this.mtbSectionsValue.TabIndex = 0;
+            this.mtbSectionsValue.Text = "10";
             this.mtbSectionsValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // mtbRopeValue
@@ -187,6 +207,7 @@ namespace LW_1
             this.mtbRopeValue.Name = "mtbRopeValue";
             this.mtbRopeValue.Size = new System.Drawing.Size(141, 30);
             this.mtbRopeValue.TabIndex = 0;
+            this.mtbRopeValue.Text = "20";
             this.mtbRopeValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // mtbWoodValue
@@ -197,25 +218,27 @@ namespace LW_1
             this.mtbWoodValue.Name = "mtbWoodValue";
             this.mtbWoodValue.Size = new System.Drawing.Size(141, 30);
             this.mtbWoodValue.TabIndex = 0;
+            this.mtbWoodValue.Text = "5";
             this.mtbWoodValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // buttonTerminate
+            // timer1
             // 
-            this.buttonTerminate.Enabled = false;
-            this.buttonTerminate.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonTerminate.Location = new System.Drawing.Point(104, 445);
-            this.buttonTerminate.Name = "buttonTerminate";
-            this.buttonTerminate.Size = new System.Drawing.Size(351, 31);
-            this.buttonTerminate.TabIndex = 3;
-            this.buttonTerminate.Text = "Прервать";
-            this.buttonTerminate.UseVisualStyleBackColor = true;
-            this.buttonTerminate.Click += new System.EventHandler(this.buttonTerminate_Click);
+            this.timer1.Interval = 1000;
+            // 
+            // trackBar1
+            // 
+            this.trackBar1.Location = new System.Drawing.Point(104, 568);
+            this.trackBar1.Name = "trackBar1";
+            this.trackBar1.Size = new System.Drawing.Size(351, 56);
+            this.trackBar1.TabIndex = 5;
+            this.trackBar1.ValueChanged += new System.EventHandler(this.trackBar1_ValueChanged);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1332, 703);
+            this.Controls.Add(this.trackBar1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.buttonTerminate);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -223,30 +246,32 @@ namespace LW_1
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Button buttonStart;
-        private System.Windows.Forms.MaskedTextBox mtbWoodTimeValue;
-        private System.Windows.Forms.MaskedTextBox mtbWoodValue;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button buttonTerminate;
+        private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button buttonStart;
         private System.Windows.Forms.MaskedTextBox mtbTimeValue;
         private System.Windows.Forms.MaskedTextBox mtbRopeTimeValue;
+        private System.Windows.Forms.MaskedTextBox mtbWoodTimeValue;
         private System.Windows.Forms.MaskedTextBox mtbSectionsValue;
         private System.Windows.Forms.MaskedTextBox mtbRopeValue;
+        private System.Windows.Forms.MaskedTextBox mtbWoodValue;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.TrackBar trackBar1;
     }
 }
 
