@@ -418,7 +418,6 @@ namespace LW_1
             progBarWorkingTime.Value = 0;
         }
 
-
         private void trackBar1_ValueChanged(object sender, EventArgs e)
         {
             if (trackBar1.Value == 0)
