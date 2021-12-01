@@ -51,7 +51,11 @@ namespace LW_1
         bool terminateflag;
         bool isCrafting;
         DataGridView dataGridView;
-        
+
+        List<double> C;
+        List<double> q;
+        int broken_details;
+
         List<Control> controls_tabPage1;
         List<Control> controls_tabPage2;
 
@@ -65,6 +69,8 @@ namespace LW_1
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            C = new List<double>(4) { 0.1225, 0.3065, 0.0096, 0.0454 };
+            q = new List<double>();
             random = new Random();
             controls_tabPage1 = new List<Control>();
             controls_tabPage2 = new List<Control>();
@@ -256,6 +262,10 @@ namespace LW_1
             seconds_of_downtime = 0;
             timer_for_mvmnt = 0;
 
+            StudentCriterion();
+
+            buttonStart.Enabled = false;
+
             time = 0;
             timer1.Start();
             await Task.Run(() => Modelling(sender, e));
@@ -265,12 +275,13 @@ namespace LW_1
         {
             woodtimeValue = Count_woodtimeValue();
             ropetimeValue = Count_ropetimeValue();
-            time++;            
+            time++;
+            broken_details = Convert.ToInt32(Math.Round(CountRandomBrokenWoodnRope()));
             if (!isCrafting)
             {
                 timer_for_mvmnt++;
             }         
-            if (time > 864 || terminateflag)
+            if (time == 864 || terminateflag)
             {
                 timer1.Stop();
                 buttonTerminate.Enabled = false;
@@ -280,6 +291,7 @@ namespace LW_1
                 lblRopeCount.Text = "0";
                 lblStairsCount.Text = "0";
                 MessageBox.Show("Моделирование успешно завершено!");
+                buttonStart.Enabled = true;
                 return;
             }
             if (timer_for_mvmnt % woodtimeValue == 0)
@@ -307,7 +319,7 @@ namespace LW_1
             {
                 if (trackBar1.Value > 5)
                 {
-                    lblWoodCount.Text = (Convert.ToInt32(lblWoodCount.Text) + woodValue).ToString();
+                    lblWoodCount.Text = (Convert.ToInt32(lblWoodCount.Text) + woodValue - broken_details).ToString();
                 }
                 else
                 {
@@ -327,14 +339,14 @@ namespace LW_1
                     };
                     if (pbWood.Location.X >= 550 && pbWood.Location.Y >= 210)
                     {
-                        lblWoodCount.Text = (Convert.ToInt32(lblWoodCount.Text) + woodValue).ToString();
+                        lblWoodCount.Text = (Convert.ToInt32(lblWoodCount.Text) + woodValue - broken_details).ToString();
                         pbWood.Location = startPos;
                     }
                 }                
             }
             else
             {
-                woodQueue += woodValue;
+                woodQueue += woodValue - broken_details;
                 lblWoodQueue.Text = $"Очередь досок: {woodQueue}шт";
             }
         }
@@ -345,7 +357,7 @@ namespace LW_1
             {
                 if (trackBar1.Value > 5)
                 {
-                    lblRopeCount.Text = (Convert.ToInt32(lblRopeCount.Text) + ropeValue).ToString();
+                    lblRopeCount.Text = (Convert.ToInt32(lblRopeCount.Text) + ropeValue - broken_details).ToString();
                 }
                 else
                 {
@@ -365,14 +377,14 @@ namespace LW_1
                     }
                     if (pbRope.Location.X >= 550 && pbRope.Location.Y >= 310)
                     {
-                        lblRopeCount.Text = (Convert.ToInt32(lblRopeCount.Text) + ropeValue).ToString();
+                        lblRopeCount.Text = (Convert.ToInt32(lblRopeCount.Text) + ropeValue - broken_details).ToString();
                         pbRope.Location = startPos;
                     }
                 }              
             }
             else
             {
-                ropeQueue += ropeValue;
+                ropeQueue += ropeValue - broken_details;
                 lblRopeQueue.Text = $"Очередь веревок: {ropeQueue}шт";
             }
         }
@@ -421,6 +433,7 @@ namespace LW_1
             progBarStairs.Value = 0;
             pbProduction.Enabled = false;
             progBarWorkingTime.Value = 0;
+            buttonStart.Enabled = true;
         }
 
 
@@ -456,14 +469,75 @@ namespace LW_1
             return t2;
         }
         
+        private double RandomNormal(double M, double G)
+        {
+            return G * Math.Cos(2 * Math.PI * random.NextDouble()) * Math.Sqrt(-2 * Math.Log(random.NextDouble())) + M;
+        }
+
+        private double CountRandomBrokenWoodnRope()
+        {
+            q.Clear();
+            double M = 1.0;
+            double G = 0.333;
+            for (int i = 0; i < C.Count; i++)
+            {
+                q.Add(RandomNormal(M, G));
+            }
+            double value = Enumerable.Range(0, C.Count).Select(i => C[i] * q[i]).Sum() + M;
+            q.Skip(1).ToList();
+            q.Add(RandomNormal(M, G));
+            return value;
+        }
+
+        private void StudentCriterion()
+        {
+            int N = 500;
+            List<double> a = new List<double>();
+            List<double> b = new List<double>();
+            for (int i = 0; i < N*2; i++)
+            {
+                if (i%2 == 0)
+                {
+                    a.Add(CountRandomBrokenWoodnRope());
+                }
+                else
+                {
+                    b.Add(CountRandomBrokenWoodnRope());
+                }
+            }
+
+            double aM = a.Sum() / N;
+            double bM = b.Sum() / N;
+            double aD = 0;
+            double bD = 0;
+            for (int i = 0; i < N; i++)
+            {
+                aD += Math.Pow(a[i] - aM, 2) / (N - 1);
+                bD += Math.Pow(b[i] - bM, 2) / (N - 1);
+            }
+
+            double D = ((N-1) * aD + (N-1) * bD) / (N - 2);
+            double stud = Math.Sqrt((Math.Pow(aM - bM, 2) * Math.Pow(N, 2)) / (D * N * 2));         
+            double fisher = 0;
+            if (aD >= bD)
+            {
+                fisher = aD / bD;
+            }
+            else
+            {
+                fisher = bD / aD;
+            }
+            MessageBox.Show($"Критерий Стьюдента - {stud}\n" +
+                $"Критерий Фишера - {fisher}");
+        }
         //private void countNorm()
         //{
-            
+
         //    for (int i = 0; i < 2000; i++)
         //    {              
         //        Console.WriteLine(1 * Math.Cos(2 * Math.PI * random.NextDouble()) * Math.Sqrt(-2 * Math.Log(random.NextDouble())) + 5);
         //    }
-            
+
         //}
         //private void countPokaz()
         //{
