@@ -1,8 +1,11 @@
-﻿using System;
+﻿using CsvHelper;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -43,6 +46,7 @@ namespace LW_1
         int timer_for_mvmnt;
         int t1;
         int t2;
+        int averagePerf;
         int seconds_of_downtime;
         double stairsCount;
         double counter;
@@ -195,7 +199,7 @@ namespace LW_1
 
             tabControl.TabPages[0].Paint += DrawScene;
 
-            timer1.Tick += Modelling;
+            //timer1.Tick += Modelling;
         }
 
         private void SetupDataGridView()
@@ -241,108 +245,27 @@ namespace LW_1
             g.Dispose();
         }
 
-        async private void buttonStart_Click(object sender, EventArgs e)
+        private void buttonStart_Click(object sender, EventArgs e)
         {
-            buttonTerminate.Enabled = true;
-            sectionsValue = Convert.ToInt32(mtbSectionsValue.Text);
-            woodValue = Convert.ToInt32(mtbWoodValue.Text);
-            woodtimeValue = Convert.ToInt32(mtbWoodTimeValue.Text);
-            ropeValue = Convert.ToInt32(mtbRopeValue.Text);
-            ropetimeValue = Convert.ToInt32(mtbRopeTimeValue.Text);
-            timeValue = Convert.ToInt32(mtbTimeValue.Text);
-            isCrafting = false;
+            buttonTerminate.Enabled = true;         
             terminateflag = false;
-
-            woodQueue = 0;
-            ropeQueue = 0;
 
             dataGridView.Rows.Clear();
 
             progBarWorkingTime.Maximum = 864;
             progBarStairs.Maximum = timeValue*10;
 
-            seconds_of_downtime = 0;
-            timer_for_mvmnt = 0;
-
-            //StudentCriterion();
-
             buttonStart.Enabled = false;
-            runModelling();
-            time = 0;
-            //timer1.Start();
-            //await Task.Run(() => Modelling(sender, e));
+            Modelling();
         }
 
-        private void Modelling(object sender, EventArgs e)
-        {
-            time++;
-            //broken_details = Convert.ToInt32(Math.Round(CountRandomBrokenWoodnRope()));
-            if (!isCrafting)
-            {
-                timer_for_mvmnt++;
-            }         
-            if (time == 864 || terminateflag)
-            {
-                timer1.Stop();
-                buttonTerminate.Enabled = false;
-                progBarStairs.Value = 0;
-                progBarWorkingTime.Value = 0;
-                lblWoodCount.Text = "0";
-                lblRopeCount.Text = "0";
-                lblStairsCount.Text = "0";
-                MessageBox.Show("Моделирование успешно завершено!");
-                buttonStart.Enabled = true;
-                return;
-            }
-            if (timer_for_mvmnt % woodtimeValue == 0)
-                BeginInvoke(new Delegate_moving(mvmntWood), pbWood);
-            if (timer_for_mvmnt % ropetimeValue == 0)
-                BeginInvoke(new Delegate_moving(mvmntRope), pbRope);
-            
-
-            BeginInvoke(new Delegate_production(() =>
-            {
-                if (Convert.ToInt32(lblWoodCount.Text) >= sectionsValue && Convert.ToInt32(lblRopeCount.Text) >= sectionsValue)
-                    Production();
-                else
-                    lblDowntime.Text = $"Время простоя: {seconds_of_downtime++}c";
-
-                progBarWorkingTime.Value++;
-                lblAveragePerf.Text = $"Средняя производительность: {Math.Round(Convert.ToDouble(lblStairsCount.Text) / time * 60, 0)} шт/м";
-                fill_dgw_n_data();
-            })) ;
-        }
+       
 
         private void mvmntWood(PictureBox pbWood)
         {
             if (!isCrafting && Convert.ToInt32(lblWoodCount.Text) < sectionsValue)
             {
-                //if (trackBar1.Value > 5)
-                //{
-                    lblWoodCount.Text = (Convert.ToInt32(lblWoodCount.Text) + woodValue).ToString();
-                //}
-                //else
-                //{
-                //    Point startPos = pbWood.Location;
-                //    int y_dist = 0;
-                //    int x_dist = pbWood.Location.X;
-
-                //    while (pbWood.Location.Y != 210)
-                //    {
-                //        y_dist++;
-                //        pbWood.Location = new Point(pbWood.Location.X, y_dist);
-                //    };
-                //    while (pbWood.Location.X != 550)
-                //    {
-                //        x_dist++;
-                //        pbWood.Location = new Point(x_dist, pbWood.Location.Y);
-                //    };
-                //    if (pbWood.Location.X >= 550 && pbWood.Location.Y >= 210)
-                //    {
-                //        lblWoodCount.Text = (Convert.ToInt32(lblWoodCount.Text) + woodValue).ToString();
-                //        pbWood.Location = startPos;
-                //    }
-                //}                
+                lblWoodCount.Text = (Convert.ToInt32(lblWoodCount.Text) + woodValue).ToString();                       
             }
             else
             {
@@ -355,32 +278,7 @@ namespace LW_1
         {
             if (!isCrafting && Convert.ToInt32(lblRopeCount.Text) < sectionsValue)
             {
-                //if (trackBar1.Value > 5)
-                //{
-                    lblRopeCount.Text = (Convert.ToInt32(lblRopeCount.Text) + ropeValue).ToString();
-                //}
-                //else
-                //{
-                //    Point startPos = pbRope.Location;
-                //    int y_dist = 520;
-                //    int x_dist = pbRope.Location.X;
-
-                //    while (pbRope.Location.Y != 310)
-                //    {
-                //        y_dist--;
-                //        pbRope.Location = new Point(pbRope.Location.X, y_dist);
-                //    };
-                //    while (pbRope.Location.X != 550)
-                //    {
-                //        x_dist++;
-                //        pbRope.Location = new Point(x_dist, pbRope.Location.Y);
-                //    }
-                //    if (pbRope.Location.X >= 550 && pbRope.Location.Y >= 310)
-                //    {
-                //        lblRopeCount.Text = (Convert.ToInt32(lblRopeCount.Text) + ropeValue).ToString();
-                //        pbRope.Location = startPos;
-                //    }
-                //}              
+                lblRopeCount.Text = (Convert.ToInt32(lblRopeCount.Text) + ropeValue).ToString();             
             }
             else
             {
@@ -449,22 +347,23 @@ namespace LW_1
             }
         }
 
-        private int Count_woodtimeValue()
+        private int Count_woodtimeValue(int m)
         {
-            t1 = Convert.ToInt32(Math.Round(1 * Math.Cos(2 * Math.PI * random.NextDouble()) * Math.Sqrt(-2 * Math.Log(random.NextDouble())) + 5));
+            t1 = Convert.ToInt32(Math.Round(1 * Math.Cos(2 * Math.PI * random.NextDouble()) * Math.Sqrt(-2 * Math.Log(random.NextDouble())) + m));
             if (t1 == 0)
             {
-                Count_woodtimeValue();
+                Count_woodtimeValue(m);
             }
             return t1;            
         }
 
-        private int Count_ropetimeValue()
+        private int Count_ropetimeValue(int L)
         {
-            t2 = Convert.ToInt32(Math.Round(-1 / 0.05 * Math.Log(random.NextDouble())));
+            double l = Convert.ToDouble(L) / 100;
+            t2 = Convert.ToInt32(Math.Round(-1 / l * Math.Log(random.NextDouble())));
             if (t2 == 0)
             {
-                Count_ropetimeValue();
+                Count_ropetimeValue(L);
             }
             return t2;
         }
@@ -474,133 +373,190 @@ namespace LW_1
             return G * Math.Cos(2 * Math.PI * random.NextDouble()) * Math.Sqrt(-2 * Math.Log(random.NextDouble())) + M;
         }
 
-        private double CountRandomBrokenWoodnRope()
+        public void Modelling()
         {
-            q.Clear();
-            double M = 1.0;
-            double G = 0.333;
-            for (int i = 0; i < C.Count; i++)
+            var rnd = new Random();
+            var results = new List<MS1.ResultLine>();
+            var experimentsNumber = 0;
+            foreach (var n1 in Enumerable.Range(10, 5).OrderBy(x => rnd.Next()).Take(2))
             {
-                q.Add(RandomNormal(M, G));
+                foreach (var n2 in Enumerable.Range(20, 5).OrderBy(x => rnd.Next()).Take(2))
+                {
+                    foreach (var n3 in Enumerable.Range(10, 5).OrderBy(x => rnd.Next()).Take(2))
+                    {
+                        foreach (var m_for_t1 in Enumerable.Range(5, 3).OrderBy(x => rnd.Next()).Take(2))
+                        {
+                            foreach (var L_for_t2 in Enumerable.Range(5, 3).OrderBy(x => rnd.Next()).Take(2))
+                            {
+                                foreach (var t3 in Enumerable.Range(10, 5).OrderBy(x => rnd.Next()).Take(2))
+                                {
+                                    var result = runModelling(n1, n2, n3, m_for_t1, L_for_t2, t3);
+                                    results.Add(result);
+                                    ++experimentsNumber;
+                                }                              
+                            }
+                        }
+                    }
+                }
             }
-            double value = Enumerable.Range(0, C.Count).Select(i => C[i] * q[i]).Sum() + M;
-            q.Skip(1).ToList();
-            q.Add(RandomNormal(M, G));
-            return value;
+
+            using (var streamReader = new StreamWriter("Output.csv"))
+            {
+                using (var csvReader = new CsvWriter(streamReader, new CultureInfo("ru-RU")))
+                {
+                    csvReader.WriteRecords(results);
+                }
+            }
+
+            var SLAULine0 = new MS1.SLAULine
+            {
+                a0 = experimentsNumber,
+                a1 = results.Select(x => x.X1).Sum(),
+                a2 = results.Select(x => x.X2).Sum(),
+                a3 = results.Select(x => x.X3).Sum(),
+                a4 = results.Select(x => x.X4).Sum(),
+                a5 = results.Select(x => x.X5).Sum(),
+                a6 = results.Select(x => x.X6).Sum(),
+                b = results.Select(x => x.Y).Sum(),
+            };
+
+            var SLAULine1 = new MS1.SLAULine
+            {
+                a0 = results.Select(x => x.X1).Sum(),
+                a1 = results.Select(x => x.X1 * x.X1).Sum(),
+                a2 = results.Select(x => x.X2 * x.X1).Sum(),
+                a3 = results.Select(x => x.X3 * x.X1).Sum(),
+                a4 = results.Select(x => x.X4 * x.X1).Sum(),
+                a5 = results.Select(x => x.X5 * x.X1).Sum(),
+                a6 = results.Select(x => x.X6 * x.X1).Sum(),
+                b = results.Select(x => x.Y * x.X1).Sum(),
+            };
+
+            var SLAULine2 = new MS1.SLAULine
+            {
+                a0 = results.Select(x => x.X2).Sum(),
+                a1 = results.Select(x => x.X1 * x.X2).Sum(),
+                a2 = results.Select(x => x.X2 * x.X2).Sum(),
+                a3 = results.Select(x => x.X3 * x.X2).Sum(),
+                a4 = results.Select(x => x.X4 * x.X2).Sum(),
+                a5 = results.Select(x => x.X5 * x.X2).Sum(),
+                a6 = results.Select(x => x.X6 * x.X2).Sum(),
+                b = results.Select(x => x.Y * x.X2).Sum(),
+            };
+
+            var SLAULine3 = new MS1.SLAULine
+            {
+                a0 = results.Select(x => x.X3).Sum(),
+                a1 = results.Select(x => x.X1 * x.X3).Sum(),
+                a2 = results.Select(x => x.X2 * x.X3).Sum(),
+                a3 = results.Select(x => x.X3 * x.X3).Sum(),
+                a4 = results.Select(x => x.X4 * x.X3).Sum(),
+                a5 = results.Select(x => x.X5 * x.X3).Sum(),
+                a6 = results.Select(x => x.X6 * x.X3).Sum(),
+                b = results.Select(x => x.Y * x.X3).Sum(),
+            };
+
+            var SLAULine4 = new MS1.SLAULine
+            {
+                a0 = results.Select(x => x.X4).Sum(),
+                a1 = results.Select(x => x.X1 * x.X4).Sum(),
+                a2 = results.Select(x => x.X2 * x.X4).Sum(),
+                a3 = results.Select(x => x.X3 * x.X4).Sum(),
+                a4 = results.Select(x => x.X4 * x.X4).Sum(),
+                a5 = results.Select(x => x.X5 * x.X4).Sum(),
+                a6 = results.Select(x => x.X6 * x.X4).Sum(),
+                b = results.Select(x => x.Y * x.X4).Sum(),
+            };
+
+            var SLAULine5 = new MS1.SLAULine
+            {
+                a0 = results.Select(x => x.X5).Sum(),
+                a1 = results.Select(x => x.X1 * x.X5).Sum(),
+                a2 = results.Select(x => x.X2 * x.X5).Sum(),
+                a3 = results.Select(x => x.X3 * x.X5).Sum(),
+                a4 = results.Select(x => x.X4 * x.X5).Sum(),
+                a5 = results.Select(x => x.X5 * x.X5).Sum(),
+                a6 = results.Select(x => x.X6 * x.X5).Sum(),
+                b = results.Select(x => x.Y * x.X5).Sum(),
+            };
+
+            var SLAULine6 = new MS1.SLAULine
+            {
+                a0 = results.Select(x => x.X6).Sum(),
+                a1 = results.Select(x => x.X1 * x.X6).Sum(),
+                a2 = results.Select(x => x.X2 * x.X6).Sum(),
+                a3 = results.Select(x => x.X3 * x.X6).Sum(),
+                a4 = results.Select(x => x.X4 * x.X6).Sum(),
+                a5 = results.Select(x => x.X5 * x.X6).Sum(),
+                a6 = results.Select(x => x.X6 * x.X6).Sum(),
+                b = results.Select(x => x.Y * x.X6).Sum(),
+            };
+
+
+            var SLAU = new List<MS1.SLAULine>
+            {
+                SLAULine0, SLAULine1, SLAULine2, SLAULine3,
+                SLAULine4, SLAULine5, SLAULine6
+            };
+
+            using (var streamReader = new StreamWriter("OutputSLAU.csv"))
+            {
+                using (var csvReader = new CsvWriter(streamReader, new CultureInfo("ru-RU")))
+                {           
+                    csvReader.WriteRecords(SLAU);
+                }
+            }
+
         }
 
-        private void StudentCriterion()
+        public MS1.ResultLine runModelling(int n1, int n2, int n3, int m_for_t1, int L_for_t2, int t3)
         {
-            int N = 500;
-            List<double> a = new List<double>();
-            List<double> b = new List<double>();
-            for (int i = 0; i < N*2; i++)
-            {
-                if (i%2 == 0)
-                {
-                    a.Add(CountRandomBrokenWoodnRope());
-                }
-                else
-                {
-                    b.Add(CountRandomBrokenWoodnRope());
-                }
-            }
+            sectionsValue = n3;
+            woodValue = n1;
+            woodtimeValue = Count_woodtimeValue(m_for_t1);
+            ropeValue = n2;
+            ropetimeValue = Count_ropetimeValue(L_for_t2);
+            timeValue = t3;
+            isCrafting = false;
+            timer_for_mvmnt = 0;
+            time = 0;
+            woodQueue = 0;
+            ropeQueue = 0;
 
-            double aM = a.Sum() / N;
-            double bM = b.Sum() / N;
-            double aD = 0;
-            double bD = 0;
-            for (int i = 0; i < N; i++)
-            {
-                aD += Math.Pow(a[i] - aM, 2) / (N - 1);
-                bD += Math.Pow(b[i] - bM, 2) / (N - 1);
-            }
+            seconds_of_downtime = 0;
 
-            double D = ((N-1) * aD + (N-1) * bD) / (N - 2);
-            double stud = Math.Sqrt((Math.Pow(aM - bM, 2) * Math.Pow(N, 2)) / (D * N * 2));         
-            double fisher = 0;
-            if (aD >= bD)
-            {
-                fisher = aD / bD;
-            }
-            else
-            {
-                fisher = bD / aD;
-            }
-            MessageBox.Show($"Критерий Стьюдента - {stud}\n" +
-                $"Критерий Фишера - {fisher}");
-        }
+            lblWoodCount.Text = "0";
+            lblRopeCount.Text = "0";
+            lblStairsCount.Text = "0";
 
-        public void runModelling()
-        {
-            for (int time = 0; time < 864; time++)
-            {
-                if (!isCrafting)
+                for (int i = 0; i < 864; i++)
                 {
-                    timer_for_mvmnt++;
-                }
-                if (timer_for_mvmnt % woodtimeValue == 0)
-                    BeginInvoke(new Delegate_moving(mvmntWood), pbWood);
-                if (timer_for_mvmnt % ropetimeValue == 0)
-                    BeginInvoke(new Delegate_moving(mvmntRope), pbRope);
-
-                BeginInvoke(new Delegate_production(() =>
-                {
+                    time++;
+                    if (!isCrafting)
+                    {
+                        timer_for_mvmnt++;
+                    }
+                    if (timer_for_mvmnt % woodtimeValue == 0)
+                        mvmntWood(pbWood);
+                    if (timer_for_mvmnt % ropetimeValue == 0)
+                        mvmntRope(pbRope);
                     if (Convert.ToInt32(lblWoodCount.Text) >= sectionsValue && Convert.ToInt32(lblRopeCount.Text) >= sectionsValue)
                         Production();
                     else
                         lblDowntime.Text = $"Время простоя: {seconds_of_downtime++}c";
-
                     progBarWorkingTime.Value++;
-                    lblAveragePerf.Text = $"Средняя производительность: {Math.Round(Convert.ToDouble(lblStairsCount.Text) / time * 60, 0)} шт/м";
+                    averagePerf = Convert.ToInt32(Math.Round(Convert.ToDouble(lblStairsCount.Text) / time * 60, 0));
+                    lblAveragePerf.Text = $"Средняя производительность: {averagePerf} шт/м";
                     fill_dgw_n_data();
-                }));
-            }
-            timer1.Stop();
-            buttonTerminate.Enabled = false;
-            progBarStairs.Value = 0;
-            progBarWorkingTime.Value = 0;
-            lblWoodCount.Text = "0";
-            lblRopeCount.Text = "0";
-            lblStairsCount.Text = "0";
-            MessageBox.Show("Моделирование успешно завершено!");
-            buttonStart.Enabled = true;
-            return;
-            //broken_details = Convert.ToInt32(Math.Round(CountRandomBrokenWoodnRope()));
-            //if (!isCrafting)
-            //{
-            //    timer_for_mvmnt++;
-            //}         
-            //if (time == 864 || terminateflag)
-            //{
-            //    timer1.Stop();
-            //    buttonTerminate.Enabled = false;
-            //    progBarStairs.Value = 0;
-            //    progBarWorkingTime.Value = 0;
-            //    lblWoodCount.Text = "0";
-            //    lblRopeCount.Text = "0";
-            //    lblStairsCount.Text = "0";
-            //    MessageBox.Show("Моделирование успешно завершено!");
-            //    buttonStart.Enabled = true;
-            //    return;
-            //}
-            //if (timer_for_mvmnt % woodtimeValue == 0)
-            //    BeginInvoke(new Delegate_moving(mvmntWood), pbWood);
-            //if (timer_for_mvmnt % ropetimeValue == 0)
-            //    BeginInvoke(new Delegate_moving(mvmntRope), pbRope);
-            
+                }
+                buttonTerminate.Enabled = false;
+                progBarStairs.Value = 0;
+                progBarWorkingTime.Value = 0;
 
-            //BeginInvoke(new Delegate_production(() =>
-            //{
-            //    if (Convert.ToInt32(lblWoodCount.Text) >= sectionsValue && Convert.ToInt32(lblRopeCount.Text) >= sectionsValue)
-            //        Production();
-            //    else
-            //        lblDowntime.Text = $"Время простоя: {seconds_of_downtime++}c";
+                buttonStart.Enabled = true;
 
-            //    progBarWorkingTime.Value++;
-            //    lblAveragePerf.Text = $"Средняя производительность: {Math.Round(Convert.ToDouble(lblStairsCount.Text) / time * 60, 0)} шт/м";
-            //    fill_dgw_n_data();
-            //})) ;
+            return new MS1.ResultLine(n1, n2, n3, t1, t2, t3, averagePerf);
         }
+
     }
 }
