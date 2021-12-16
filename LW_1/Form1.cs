@@ -48,6 +48,7 @@ namespace LW_1
         int t2;
         int averagePerf;
         int seconds_of_downtime;
+        int experimentsNumber = 0;
         double stairsCount;
         double counter;
         double efficiency;
@@ -247,6 +248,9 @@ namespace LW_1
 
         private void buttonStart_Click(object sender, EventArgs e)
         {
+            woodValue = Convert.ToInt32(mtbWoodValue.Text);
+            ropeValue = Convert.ToInt32(mtbRopeValue.Text);
+
             buttonTerminate.Enabled = true;         
             terminateflag = false;
 
@@ -377,28 +381,18 @@ namespace LW_1
         {
             var rnd = new Random();
             var results = new List<MS1.ResultLine>();
-            var experimentsNumber = 0;
-            foreach (var n1 in Enumerable.Range(10, 5).OrderBy(x => rnd.Next()).Take(2))
+
+
+            foreach (var n3 in Enumerable.Range(5, 10))
             {
-                foreach (var n2 in Enumerable.Range(20, 5).OrderBy(x => rnd.Next()).Take(2))
+                foreach (var t3 in Enumerable.Range(5, 10))
                 {
-                    foreach (var n3 in Enumerable.Range(10, 5).OrderBy(x => rnd.Next()).Take(2))
-                    {
-                        foreach (var m_for_t1 in Enumerable.Range(5, 3).OrderBy(x => rnd.Next()).Take(2))
-                        {
-                            foreach (var L_for_t2 in Enumerable.Range(5, 3).OrderBy(x => rnd.Next()).Take(2))
-                            {
-                                foreach (var t3 in Enumerable.Range(10, 5).OrderBy(x => rnd.Next()).Take(2))
-                                {
-                                    var result = runModelling(n1, n2, n3, m_for_t1, L_for_t2, t3);
-                                    results.Add(result);
-                                    ++experimentsNumber;
-                                }                              
-                            }
-                        }
-                    }
+                    var result = runModelling(n3, t3);
+                    results.Add(result);
+                    ++experimentsNumber;
                 }
             }
+
 
             using (var streamReader = new StreamWriter("Output.csv"))
             {
@@ -408,114 +402,41 @@ namespace LW_1
                 }
             }
 
-            var SLAULine0 = new MS1.SLAULine
-            {
-                a0 = experimentsNumber,
-                a1 = results.Select(x => x.X1).Sum(),
-                a2 = results.Select(x => x.X2).Sum(),
-                a3 = results.Select(x => x.X3).Sum(),
-                a4 = results.Select(x => x.X4).Sum(),
-                a5 = results.Select(x => x.X5).Sum(),
-                a6 = results.Select(x => x.X6).Sum(),
-                b = results.Select(x => x.Y).Sum(),
-            };
+            GetPareto(results);
 
-            var SLAULine1 = new MS1.SLAULine
-            {
-                a0 = results.Select(x => x.X1).Sum(),
-                a1 = results.Select(x => x.X1 * x.X1).Sum(),
-                a2 = results.Select(x => x.X2 * x.X1).Sum(),
-                a3 = results.Select(x => x.X3 * x.X1).Sum(),
-                a4 = results.Select(x => x.X4 * x.X1).Sum(),
-                a5 = results.Select(x => x.X5 * x.X1).Sum(),
-                a6 = results.Select(x => x.X6 * x.X1).Sum(),
-                b = results.Select(x => x.Y * x.X1).Sum(),
-            };
-
-            var SLAULine2 = new MS1.SLAULine
-            {
-                a0 = results.Select(x => x.X2).Sum(),
-                a1 = results.Select(x => x.X1 * x.X2).Sum(),
-                a2 = results.Select(x => x.X2 * x.X2).Sum(),
-                a3 = results.Select(x => x.X3 * x.X2).Sum(),
-                a4 = results.Select(x => x.X4 * x.X2).Sum(),
-                a5 = results.Select(x => x.X5 * x.X2).Sum(),
-                a6 = results.Select(x => x.X6 * x.X2).Sum(),
-                b = results.Select(x => x.Y * x.X2).Sum(),
-            };
-
-            var SLAULine3 = new MS1.SLAULine
-            {
-                a0 = results.Select(x => x.X3).Sum(),
-                a1 = results.Select(x => x.X1 * x.X3).Sum(),
-                a2 = results.Select(x => x.X2 * x.X3).Sum(),
-                a3 = results.Select(x => x.X3 * x.X3).Sum(),
-                a4 = results.Select(x => x.X4 * x.X3).Sum(),
-                a5 = results.Select(x => x.X5 * x.X3).Sum(),
-                a6 = results.Select(x => x.X6 * x.X3).Sum(),
-                b = results.Select(x => x.Y * x.X3).Sum(),
-            };
-
-            var SLAULine4 = new MS1.SLAULine
-            {
-                a0 = results.Select(x => x.X4).Sum(),
-                a1 = results.Select(x => x.X1 * x.X4).Sum(),
-                a2 = results.Select(x => x.X2 * x.X4).Sum(),
-                a3 = results.Select(x => x.X3 * x.X4).Sum(),
-                a4 = results.Select(x => x.X4 * x.X4).Sum(),
-                a5 = results.Select(x => x.X5 * x.X4).Sum(),
-                a6 = results.Select(x => x.X6 * x.X4).Sum(),
-                b = results.Select(x => x.Y * x.X4).Sum(),
-            };
-
-            var SLAULine5 = new MS1.SLAULine
-            {
-                a0 = results.Select(x => x.X5).Sum(),
-                a1 = results.Select(x => x.X1 * x.X5).Sum(),
-                a2 = results.Select(x => x.X2 * x.X5).Sum(),
-                a3 = results.Select(x => x.X3 * x.X5).Sum(),
-                a4 = results.Select(x => x.X4 * x.X5).Sum(),
-                a5 = results.Select(x => x.X5 * x.X5).Sum(),
-                a6 = results.Select(x => x.X6 * x.X5).Sum(),
-                b = results.Select(x => x.Y * x.X5).Sum(),
-            };
-
-            var SLAULine6 = new MS1.SLAULine
-            {
-                a0 = results.Select(x => x.X6).Sum(),
-                a1 = results.Select(x => x.X1 * x.X6).Sum(),
-                a2 = results.Select(x => x.X2 * x.X6).Sum(),
-                a3 = results.Select(x => x.X3 * x.X6).Sum(),
-                a4 = results.Select(x => x.X4 * x.X6).Sum(),
-                a5 = results.Select(x => x.X5 * x.X6).Sum(),
-                a6 = results.Select(x => x.X6 * x.X6).Sum(),
-                b = results.Select(x => x.Y * x.X6).Sum(),
-            };
-
-
-            var SLAU = new List<MS1.SLAULine>
-            {
-                SLAULine0, SLAULine1, SLAULine2, SLAULine3,
-                SLAULine4, SLAULine5, SLAULine6
-            };
-
-            using (var streamReader = new StreamWriter("OutputSLAU.csv"))
+            using (var streamReader = new StreamWriter("OutputParetto.csv"))
             {
                 using (var csvReader = new CsvWriter(streamReader, new CultureInfo("ru-RU")))
-                {           
-                    csvReader.WriteRecords(SLAU);
+                {
+                    csvReader.WriteRecords(results);
                 }
             }
 
         }
 
-        public MS1.ResultLine runModelling(int n1, int n2, int n3, int m_for_t1, int L_for_t2, int t3)
+        static void GetPareto(List<MS1.ResultLine> results)
+        {
+            var jIds = new List<int>();
+            var j = results.FirstOrDefault();
+            do
+            {
+                jIds.Add(j.Id);
+                var k = results.FirstOrDefault(x => j.Id != x.Id && j.CompareTo(x) == -1);
+                if (k != null)
+                {
+                    results.Remove(j);
+                }
+
+                j = results.FirstOrDefault(x => !jIds.Contains(x.Id));
+            }
+            while (j != null);
+        }
+
+
+        public MS1.ResultLine runModelling(int n3, int t3)
         {
             sectionsValue = n3;
-            woodValue = n1;
-            woodtimeValue = Count_woodtimeValue(m_for_t1);
-            ropeValue = n2;
-            ropetimeValue = Count_ropetimeValue(L_for_t2);
+
             timeValue = t3;
             isCrafting = false;
             timer_for_mvmnt = 0;
@@ -532,7 +453,9 @@ namespace LW_1
                 for (int i = 0; i < 864; i++)
                 {
                     time++;
-                    if (!isCrafting)
+                    woodtimeValue = Count_woodtimeValue(5);
+                    ropetimeValue = Count_ropetimeValue(5);
+                if (!isCrafting)
                     {
                         timer_for_mvmnt++;
                     }
@@ -555,7 +478,16 @@ namespace LW_1
 
                 buttonStart.Enabled = true;
 
-            return new MS1.ResultLine(n1, n2, n3, t1, t2, t3, averagePerf);
+            return new MS1.ResultLine
+            {
+                Id = experimentsNumber++,
+                N3 = n3,
+                T3 = t3,
+                Seconds_of_downtime = seconds_of_downtime,
+                AveragePerf = averagePerf,
+                WoodQueue = woodQueue,
+                RopeQueue = ropeQueue
+            };
         }
 
     }
