@@ -32,23 +32,17 @@ namespace MS1
         {
             var R = new int[4];
             R[0] = Seconds_of_downtime == resultLine.Seconds_of_downtime
-                ? 0
-                : Seconds_of_downtime < resultLine.Seconds_of_downtime ? 1 : -1;
+                ? 0 : Seconds_of_downtime < resultLine.Seconds_of_downtime ? 1 : -1;
             R[1] = AveragePerf == resultLine.AveragePerf
-                ? 0
-                : AveragePerf > resultLine.AveragePerf ? 1 : -1;
+                ? 0 : AveragePerf > resultLine.AveragePerf ? 1 : -1;
             R[2] = WoodQueue == resultLine.WoodQueue
-                ? 0
-                : WoodQueue < resultLine.WoodQueue ? 1 : -1;
+                ? 0 : WoodQueue < resultLine.WoodQueue ? 1 : -1;
             R[3] = RopeQueue == resultLine.RopeQueue
-                ? 0
-                : RopeQueue < resultLine.RopeQueue ? 1 : -1;
+                ? 0 : RopeQueue < resultLine.RopeQueue ? 1 : -1;
 
             return R.All(x => x == 0)
-                ? 0
-                : R.All(x => x == 1 || x == 0)
-                    ? 1
-                    : R.All(x => x == -1 || x == 0) ? -1 : 0;
+                ? 0 : R.All(x => x == 1 || x == 0)
+                    ? 1 : R.All(x => x == -1 || x == 0) ? -1 : 0;
         }
         
 

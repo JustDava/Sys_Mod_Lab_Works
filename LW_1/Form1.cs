@@ -455,7 +455,7 @@ namespace LW_1
                     time++;
                     woodtimeValue = Count_woodtimeValue(5);
                     ropetimeValue = Count_ropetimeValue(5);
-                if (!isCrafting)
+                    if (!isCrafting)
                     {
                         timer_for_mvmnt++;
                     }
